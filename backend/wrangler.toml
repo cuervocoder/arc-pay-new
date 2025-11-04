@@ -1,0 +1,27 @@
+name = "arc-ai-agent"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# KV Namespaces for data storage
+kv_namespaces = [
+  { binding = "USER_PREFS", id = "65e6b3a64ff94721866e917eeced128c" },
+  { binding = "PAYMENT_HISTORY", id = "ba741667e7704b608033512c195fc5c1" },
+  { binding = "SUBSCRIPTIONS", id = "7be116c5ed8d4b0e939d2e86d63f19c3" }
+]
+
+# Environment variables (set secrets with: wrangler secret put VARIABLE_NAME)
+# DO NOT put actual secrets here - use wrangler secret put instead
+
+[env.production]
+name = "arc-ai-agent-prod"
+
+[env.staging]
+name = "arc-ai-agent-staging"
+
+# Cron triggers for automatic subscription processing
+[triggers]
+crons = ["0 */1 * * *"]  # Run every hour to check due subscriptions
+
+# Build configuration
+[build]
+command = ""
