@@ -93,6 +93,14 @@ export default {
       else if (path === '/api/statistics') {
         response = await handleStatistics(env);
       }
+      // Handle user registration
+      else if ((path === '/auth/signup' || path === '/api/auth/signup') && request.method === 'POST') {
+        response = await handleSignUp(request, env);
+      }
+      // Handle user sign-in
+      else if ((path === '/auth/signin' || path === '/api/auth/signin') && request.method === 'POST') {
+        response = await handleSignIn(request, env);
+      }
       else {
         response = jsonResponse({ error: 'Not found' }, 404);
       }
@@ -404,6 +412,75 @@ async function handleStatistics(env) {
       timestamp: new Date().toISOString()
     }
   });
+}
+
+/**
+ * Handle user sign up
+ */
+async function handleSignUp(request, env) {
+  const { email, password, name } = await request.json();
+
+  if (!email || !password || !name) {
+    return jsonResponse({ error: 'Missing required fields' }, 400);
+  }
+
+  // Check if user already exists
+  const existingUser = await env.USERS.get(`user:${email}`);
+  if (existingUser) {
+    return jsonResponse({ error: 'User with this email already exists' }, 409);
+  }
+
+  // In a real app, you'd hash the password securely
+  const user = { email, password, name, userId: `user-${Date.now()}` };
+  await env.USERS.put(`user:${email}`, JSON.stringify(user));
+
+  // In a real app, you'd generate a proper JWT
+  const token = `fake-token-${Date.now()}`;
+  const { password: _, ...userWithoutPassword } = user;
+
+  return jsonResponse({
+    success: true,
+    message: 'User created successfully',
+    user: userWithoutPassword,
+    token
+  }, 201);
+}
+
+/**
+ * Handle user sign in
+ */
+async function handleSignIn(request, env) {
+  const { email, password } = await request.json();
+
+  if (!email || !password) {
+    return jsonResponse({ error: 'Missing required fields' }, 400);
+  }
+
+  let userData = await env.USERS.get(`user:${email}`);
+
+  // If user not found, check for demo user
+  if (!userData && email === 'demo@arcpay.com' && password === 'Demo@123') {
+      const demoUser = { email, password, name: 'Demo User', userId: 'user-demo' };
+      await env.USERS.put(`user:${email}`, JSON.stringify(demoUser));
+      userData = JSON.stringify(demoUser);
+  }
+
+  if (userData) {
+    const user = JSON.parse(userData);
+    if (user.password === password) {
+      // In a real app, you'd generate a proper JWT
+      const token = `fake-token-${Date.now()}`;
+      const { password: _, ...userWithoutPassword } = user;
+      return jsonResponse({
+        success: true,
+        message: 'Sign-in successful',
+        user: userWithoutPassword,
+        token
+      });
+    }
+  }
+
+  return jsonResponse({ error: 'Invalid credentials' }, 401);
 }
 
 /**

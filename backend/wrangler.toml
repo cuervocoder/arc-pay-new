@@ -6,7 +6,8 @@ compatibility_date = "2024-01-01"
 kv_namespaces = [
   { binding = "USER_PREFS", id = "65e6b3a64ff94721866e917eeced128c" },
   { binding = "PAYMENT_HISTORY", id = "ba741667e7704b608033512c195fc5c1" },
-  { binding = "SUBSCRIPTIONS", id = "7be116c5ed8d4b0e939d2e86d63f19c3" }
+  { binding = "SUBSCRIPTIONS", id = "7be116c5ed8d4b0e939d2e86d63f19c3" },
+  { binding = "USERS", id = "f9c3b3a64ff94721866e917eeced128d" }
 ]
 
 # Environment variables (set secrets with: wrangler secret put VARIABLE_NAME)
