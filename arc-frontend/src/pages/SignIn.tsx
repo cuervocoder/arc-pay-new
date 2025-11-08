@@ -24,6 +24,7 @@ export const SignIn: React.FC = () => {
       await signIn(email, password);
       navigate('/dashboard');
     } catch (err: any) {
+      console.log(err);
       setError(err.response?.data?.message || 'Invalid credentials');
     }
   };

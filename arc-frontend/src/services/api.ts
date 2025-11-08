@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { ApiResponse, User, Wallet, ContentFeed, PaymentHistory, UserPreferences, AgentStatus, DashboardStats } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787/api';
 
 class ApiService {
   private api: AxiosInstance;

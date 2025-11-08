@@ -56,8 +56,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ isLoading: true });
     try {
       const response = await apiService.signIn(email, password);
-      if (response.data?.user) {
-        set({ user: response.data.user, isAuthenticated: true });
+      if (response.user && response.token) {
+        set({ user: response.user, isAuthenticated: true });
+        apiService.setToken(response.token);
       }
     } catch (error) {
       console.error('Sign in error:', error);
@@ -71,8 +72,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ isLoading: true });
     try {
       const response = await apiService.signUp(email, password, name);
-      if (response.data?.user) {
-        set({ user: response.data.user, isAuthenticated: true });
+      if (response.user && response.token) {
+        set({ user: response.user, isAuthenticated: true });
+        apiService.setToken(response.token);
       }
     } catch (error) {
       console.error('Sign up error:', error);
